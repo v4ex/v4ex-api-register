@@ -20,6 +20,11 @@ module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, Passwo
     Registry.base.connection.close()
   }
 
+  const handleError = (err) => {
+    console.error(err)
+    done()
+  }
+
   program.command('register')
          .description('add new Registry to database')
          .argument('<password>', 'plain password text')
@@ -35,15 +40,15 @@ module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, Passwo
                new: true
              }, (err, identity) => {
                if (err) {
-                 console.error(err)
+                 handleError(err)
                } else {
                  bcryptPassword(Password, plainTextPassword, (err, password) => {
                     if (err) {
-                      console.error(err)
+                      handleError(err)
                     } else {
                       register(Registry, identity, password, (err, registry) => {
                         if (err) {
-                          console.error(err)
+                          handleError(err)
                         } else {
                           console.log(registry)
                           done()
@@ -61,15 +66,15 @@ module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, Passwo
               new: true
             }, (err, identity) => {
               if (err) {
-                console.error(err)
+                handleError(err)
               } else {
                 bcryptPassword(Password, plainTextPassword, (err, password) => {
                    if (err) {
-                     console.error(err)
+                     handleError(err)
                    } else {
                      register(Registry, identity, password, (err, registry) => {
                        if (err) {
-                         console.error(err)
+                         handleError(err)
                        } else {
                          console.log(registry)
                          done()
