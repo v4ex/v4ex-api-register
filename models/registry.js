@@ -26,7 +26,31 @@
     const Schema = mongoose.Schema
     RegistrySchema = new Schema({
       identity: { type: mongoose.ObjectId, ref: Identity, unique: true, immutable: true },
-      password: { type: mongoose.ObjectId, ref: Password }
+      password: {
+        type: mongoose.ObjectId,
+        ref: Password,
+        // #1 Log previous password
+        set: function(password) {
+          this._previousPassword = this.password;
+          return password
+        }
+      }
+    })
+    // #2 Handle password replacement
+    RegistrySchema.pre('save', function(next) {
+      if (this.isModified('password')) {
+        this.increment()
+      }
+      next()
+    })
+    RegistrySchema.post('save', function(registry) {
+      if (this._previousPassword) {
+        Password.findByIdAndDelete(this._previousPassword, (err, deletedPassword) => {
+          if (err) {
+            console.error(err)
+          }
+        })
+      }
     })
     Registry = mongoose.model(modelName, RegistrySchema)
   }

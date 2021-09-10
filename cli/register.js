@@ -11,7 +11,6 @@ module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, Passwo
   const { replacePassword } = require('../lib/replace-password')({ env })
 
   const { Identity } = require('v4ex-api-identity/models/all-identity')(IdentitySettings || {})
-  const { acknowledge, acknowledgeByUsername, acknowledgeByEmail, acknowledgeByUsernameAndEmail } = require('v4ex-api-identity/lib/acknowledge')({ env })
   const { Password } = require('v4ex-api-password/models/password')(PasswordSettings || {})
   const { bcryptPassword } = require('v4ex-api-password/lib/bcrypt-password')({ env })
 
@@ -34,6 +33,7 @@ module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, Passwo
          .option('--replace', 'indicate to replace existent')
          .action((plainTextPassword, options) => {
            if (options.username && !options.email) {
+             // TODO Transaction
              Identity.findOneAndUpdate({
                username: options.username
              }, { username: options.username }, {
@@ -48,6 +48,7 @@ module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, Passwo
                       handleError(err)
                     } else {
                       if (options.replace) {
+                        // TODO Throw error if identity is new
                         replacePassword(Registry, identity, password, (err, registry) => {
                           if (err) {
                             handleError(err)

@@ -5,6 +5,7 @@
 
 const { program } = require('commander')
 require('./cli/register')({})
+require('./cli/registry')({})
 
 
 program.parse()
