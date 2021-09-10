@@ -8,6 +8,7 @@ const registry = require('../models/registry')
 module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, PasswordSettings }) => {
   Registry = Registry || require('../models/registry')({ mongoose, modelName, env }).Registry
   const { register } = require('../lib/register')({ env })
+  const { replacePassword } = require('../lib/replace-password')({ env })
 
   const { Identity } = require('v4ex-api-identity/models/all-identity')(IdentitySettings || {})
   const { acknowledge, acknowledgeByUsername, acknowledgeByEmail, acknowledgeByUsernameAndEmail } = require('v4ex-api-identity/lib/acknowledge')({ env })
@@ -30,8 +31,8 @@ module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, Passwo
          .argument('<password>', 'plain password text')
          .option('--username <username>', 'username for identity')
          .option('--email <email>', 'email for identity')
+         .option('--replace', 'indicate to replace existent')
          .action((plainTextPassword, options) => {
-           
            if (options.username && !options.email) {
              Identity.findOneAndUpdate({
                username: options.username
@@ -46,14 +47,25 @@ module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, Passwo
                     if (err) {
                       handleError(err)
                     } else {
-                      register(Registry, identity, password, (err, registry) => {
-                        if (err) {
-                          handleError(err)
-                        } else {
-                          console.log(registry)
-                          done()
-                        }
-                      })
+                      if (options.replace) {
+                        replacePassword(Registry, identity, password, (err, registry) => {
+                          if (err) {
+                            handleError(err)
+                          } else {
+                            console.log(registry)
+                            done()
+                          }
+                        })
+                      } else {
+                        register(Registry, identity, password, (err, registry) => {
+                          if (err) {
+                            handleError(err)
+                          } else {
+                            console.log(registry)
+                            done()
+                          }
+                        })
+                      }
                     }
                  })
                }
@@ -72,14 +84,25 @@ module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, Passwo
                    if (err) {
                      handleError(err)
                    } else {
-                     register(Registry, identity, password, (err, registry) => {
-                       if (err) {
-                         handleError(err)
-                       } else {
-                         console.log(registry)
-                         done()
-                       }
-                     })
+                    if (options.replace) {
+                      replacePassword(Registry, identity, password, (err, registry) => {
+                        if (err) {
+                          handleError(err)
+                        } else {
+                          console.log(registry)
+                          done()
+                        }
+                      })
+                    } else {
+                      register(Registry, identity, password, (err, registry) => {
+                        if (err) {
+                          handleError(err)
+                        } else {
+                          console.log(registry)
+                          done()
+                        }
+                      })
+                    }
                    }
                 })
               }

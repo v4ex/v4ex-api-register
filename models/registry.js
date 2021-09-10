@@ -25,7 +25,7 @@
   } else {
     const Schema = mongoose.Schema
     RegistrySchema = new Schema({
-      identity: { type: mongoose.ObjectId, ref: Identity, unique: true },
+      identity: { type: mongoose.ObjectId, ref: Identity, unique: true, immutable: true },
       password: { type: mongoose.ObjectId, ref: Password }
     })
     Registry = mongoose.model(modelName, RegistrySchema)
