@@ -29,7 +29,7 @@ module.exports = ({ Registry, mongoose, modelName, env, IdentitySettings, Passwo
          .option('--username <username>', 'username for identity')
          .option('--email <email>', 'email for identity')
          .option('--replace', 'indicate to replace existent')
-         .action((plainTextPassword, options) => {
+         .action(function(plainTextPassword, options) {
            if (options.username && !options.email) {
              // TODO Transaction
              Identity.findOneAndUpdate({

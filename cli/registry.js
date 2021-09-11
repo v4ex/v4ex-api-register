@@ -21,7 +21,7 @@
   program.command('registry')
          .description('control Registry model in database')
          .option('--drop', 'Drop Registry model collection in database')
-         .action((options) => {
+         .action(function(options) {
            if (options.drop) {
              Registry.collection.drop(done)
            }
