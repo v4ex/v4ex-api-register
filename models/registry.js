@@ -14,8 +14,8 @@
   const { Identity } = require('v4ex-api-identity/models/all-identity')(IdentitySettings || {})
   const { Password } = require('v4ex-api-password/models/password')(PasswordSettings || {})
 
-  if (mongoose === undefined) mongoose = require('../mongoose')({ env })
-  if (modelName === undefined) modelName = 'Registry'
+  mongoose = mongoose || require('../mongoose')({ env })
+  modelName = modelName || 'Registry'
 
   let Registry, RegistrySchema
 
